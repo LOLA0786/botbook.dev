@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>BotBook Agent Network</title>
+
+<script src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+
+<style>
+body {
+  font-family: Arial;
+  background: #0b0f19;
+  color: white;
+}
+
+#network {
+  width: 100%;
+  height: 90vh;
+  border: 1px solid #333;
+}
+</style>
+
+</head>
+
+<body>
+
+<h2>BotBook Agent Network</h2>
+
+<div id="network"></div>
+
+<script>
+
+async function loadGraph() {
+
+  const res = await fetch("/graph")
+  const data = await res.json()
+
+  const nodes = new vis.DataSet(
+    data.nodes.map(n => ({
+      id: n,
+      label: n
+    }))
+  )
+
+  const edges = new vis.DataSet(
+    data.edges.map(e => ({
+      from: e.source,
+      to: e.target,
+      label: e.task
+    }))
+  )
+
+  const container = document.getElementById("network")
+
+  const graphData = { nodes: nodes, edges: edges }
+
+  const options = {
+    physics: {
+      stabilization: false
+    },
+    nodes: {
+      shape: "dot",
+      size: 20
+    },
+    edges: {
+      arrows: "to"
+    }
+  }
+
+  new vis.Network(container, graphData, options)
+}
+
+loadGraph()
+
+setInterval(loadGraph, 3000)
+
+</script>
+
+</body>
+</html>
