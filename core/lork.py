@@ -1,11 +1,12 @@
 from graph.agent_graph import agent_graph
+from core.reputation import reputation
 
 def execute_collaboration(agent_a, agent_b, task):
-    """
-    Simulated LORK orchestration layer
-    """
 
     agent_graph.add_collaboration(agent_a, agent_b, task)
+
+    reputation.record(agent_a)
+    reputation.record(agent_b)
 
     return {
         "status": "executed",

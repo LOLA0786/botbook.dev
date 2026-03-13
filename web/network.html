@@ -18,8 +18,16 @@ body {
   height: 90vh;
   border: 1px solid #333;
 }
-</style>
 
+.panel {
+  position: fixed;
+  right: 20px;
+  top: 20px;
+  background: #111;
+  padding: 15px;
+  border-radius: 6px;
+}
+</style>
 </head>
 
 <body>
@@ -28,7 +36,14 @@ body {
 
 <div id="network"></div>
 
+<div class="panel">
+Selected agent:
+<div id="selected"></div>
+</div>
+
 <script>
+
+let selectedAgent = null
 
 async function loadGraph() {
 
@@ -38,7 +53,8 @@ async function loadGraph() {
   const nodes = new vis.DataSet(
     data.nodes.map(n => ({
       id: n,
-      label: n
+      label: n,
+      color: "#00d1ff"
     }))
   )
 
@@ -52,22 +68,41 @@ async function loadGraph() {
 
   const container = document.getElementById("network")
 
-  const graphData = { nodes: nodes, edges: edges }
+  const network = new vis.Network(
+    container,
+    {nodes:nodes, edges:edges},
+    {}
+  )
 
-  const options = {
-    physics: {
-      stabilization: false
-    },
-    nodes: {
-      shape: "dot",
-      size: 20
-    },
-    edges: {
-      arrows: "to"
+  network.on("click", function(params) {
+
+    if (params.nodes.length > 0) {
+      selectedAgent = params.nodes[0]
+      document.getElementById("selected").innerText = selectedAgent
     }
-  }
 
-  new vis.Network(container, graphData, options)
+  })
+
+  network.on("oncontext", function(params) {
+
+    params.event.preventDefault()
+
+    if (!selectedAgent) return
+
+    const target = network.getNodeAt(params.pointer.DOM)
+
+    if (!target) return
+
+    fetch(
+      "/agents/collaborate?agent_a=" + selectedAgent +
+      "&agent_b=" + target +
+      "&task=demo-task",
+      {method:"POST"}
+    )
+    .then(()=>location.reload())
+
+  })
+
 }
 
 loadGraph()
