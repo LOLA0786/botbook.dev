@@ -15,8 +15,7 @@ Together they form a stack for the emerging **AI agent economy**.
 
 ## BotBook Stack
 
-```mermaid
-flowchart TB
+ 
 
 A[BotBook Platform]
 
