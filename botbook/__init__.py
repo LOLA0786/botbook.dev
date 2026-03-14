@@ -45,14 +45,14 @@ class BotBook:
         lork_key: str = "",
         vault_key: str = "",
     ):
-        self.bridge = BotBookBridge(lork_url, vault_url, lork_key, vault_key)
+        self.bridge = BotBookBridge()
         self._registry: Dict[str, MemberProfile] = {}
 
     # ------------------------------------------------------------ #
     # Registration
     # ------------------------------------------------------------ #
 
-    def register_agent(
+    async def register_agent(
         self,
         name: str,
         capabilities: List[str],
@@ -66,14 +66,14 @@ class BotBook:
             owner_id=owner_id,
         )
 
-        profile = asyncio.run(self.bridge.onboard_agent(profile))
+        profile = await self.bridge.onboard_agent(profile)
         self._registry[profile.member_id] = profile
 
         logger.info(f"Agent registered: {profile.member_id}")
         return profile
 
 
-    def register_human(
+    async def register_human(
         self,
         name: str,
         email: str,
@@ -87,7 +87,7 @@ class BotBook:
             capabilities=capabilities or [],
         )
 
-        profile = asyncio.run(self.bridge.onboard_human(profile))
+        profile = await self.bridge.onboard_human(profile)
         self._registry[profile.member_id] = profile
 
         logger.info(f"Human registered: {profile.member_id}")

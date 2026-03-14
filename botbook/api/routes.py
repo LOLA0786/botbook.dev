@@ -62,7 +62,7 @@ async def health():
 @app.post("/v1/agents/register")
 async def register_agent(req: RegisterAgentRequest):
     try:
-        profile = _bb.register_agent(
+        profile = await _bb.register_agent(
             name=req.name,
             capabilities=req.capabilities,
             owner_id=req.owner_id,
@@ -76,7 +76,7 @@ async def register_agent(req: RegisterAgentRequest):
 @app.post("/v1/humans/register")
 async def register_human(req: RegisterHumanRequest):
     try:
-        profile = _bb.register_human(
+        profile = await _bb.register_human(
             name=req.name,
             email=req.email,
             capabilities=req.capabilities,

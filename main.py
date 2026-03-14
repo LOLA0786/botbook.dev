@@ -1,3 +1,5 @@
+from botbook.network.graph_api import router as network_router
+from botbook.api.trust_routes import router as trust_router
 """
 BotBook — main entrypoint
 Run with: uvicorn main:app --reload --host 0.0.0.0 --port 8000
@@ -23,3 +25,17 @@ if __name__ == "__main__":
         workers=1,
         log_level="info",
     )
+
+app.include_router(network_router)
+app.include_router(trust_router)
+
+from botbook.api.agent_run import router as agent_run_router
+app.include_router(agent_run_router)
+
+from botbook.api.tools import router as tools_router
+from botbook.tools.load_tools import *
+
+app.include_router(tools_router)
+
+from botbook.api.agent_rpc import router as agent_rpc_router
+app.include_router(agent_rpc_router)
