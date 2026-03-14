@@ -1,17 +1,36 @@
 from fastapi import APIRouter
-from ..contracts.engine import ContractEngine
+from pydantic import BaseModel
 
-router = APIRouter()
-engine = ContractEngine()
+from botbook.economy.contracts import engine
 
-@router.post("/contracts/create")
-def create_contract(payer, worker, task, reward):
+router = APIRouter(prefix="/v1/contracts")
 
-    c = engine.create(
-        payer=payer,
-        worker=worker,
-        task=task,
-        reward=reward
-    )
 
-    return c.__dict__
+class ContractRequest(BaseModel):
+    client: str
+    worker: str
+    task: str
+    amount: float
+
+
+@router.post("/create")
+async def create_contract(req: ContractRequest):
+    c = engine.create_contract(req.client, req.worker, req.task, req.amount)
+
+    return {
+        "contract_id": c.contract_id,
+        "status": c.status,
+        "escrow_locked": c.amount,
+        "worker": c.worker,
+        "task": c.task,
+    }
+
+
+class ReleaseRequest(BaseModel):
+    contract_id: str
+    result_hash: str
+
+
+@router.post("/release")
+async def release(req: ReleaseRequest):
+    return engine.release_payment(req.contract_id, req.result_hash)

@@ -1,3 +1,4 @@
+from botbook.api.contracts import router as contracts_router
 from botbook.network.graph_api import router as network_router
 from botbook.api.trust_routes import router as trust_router
 """
