@@ -1,36 +1,25 @@
-from fastapi import FastAPI
-from agents.agent import Agent
-from core.registry import registry
-from core.privatevault import verify_agent
-from network.broadcast import broadcaster
+"""
+BotBook — main entrypoint
+Run with: uvicorn main:app --reload --host 0.0.0.0 --port 8000
+"""
 
-app = FastAPI(title="BotBook")
+import logging
+import uvicorn
+from botbook.api.routes import app
 
-@app.post("/agents/publish")
 
-def publish_agent(agent: Agent):
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+)
 
-    verification = verify_agent(agent.name)
 
-    if verification["verified"]:
-        agent.verified = True
-
-    registry.register(agent)
-
-    return {
-        "agent": agent,
-        "verification": verification
-    }
-
-@app.post("/node/connect")
-
-def connect_node(url: str):
-
-    broadcaster.add_peer(url)
-
-    return {"status": "connected", "peer": url}
-
-@app.get("/agents")
-
-def list_agents():
-    return registry.list_agents()
+if __name__ == "__main__":
+    uvicorn.run(
+        "main:app",
+        host="0.0.0.0",
+        port=8000,
+        reload=True,
+        workers=1,
+        log_level="info",
+    )
