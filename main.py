@@ -1,3 +1,7 @@
+from botbook.api.nodes import router as nodes_router
+from botbook.api.events import router as events_router
+from botbook.api.capabilities import router as capability_router
+from botbook.api.agent_dns import router as agent_dns_router
 from botbook.api.jobs import router as jobs_router
 from botbook.api.contracts import router as contracts_router
 from botbook.api.contracts import router as contracts_router
@@ -44,3 +48,7 @@ app.include_router(tools_router)
 
 from botbook.api.agent_rpc import router as agent_rpc_router
 app.include_router(agent_rpc_router)
+app.include_router(agent_dns_router)
+app.include_router(capability_router)
+app.include_router(events_router)
+app.include_router(nodes_router)
