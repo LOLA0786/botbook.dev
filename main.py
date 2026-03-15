@@ -1,3 +1,5 @@
+from botbook.api.jobs import router as jobs_router
+from botbook.api.contracts import router as contracts_router
 from botbook.api.contracts import router as contracts_router
 from botbook.network.graph_api import router as network_router
 from botbook.api.trust_routes import router as trust_router
@@ -29,6 +31,8 @@ if __name__ == "__main__":
 
 app.include_router(network_router)
 app.include_router(trust_router)
+app.include_router(jobs_router)
+app.include_router(contracts_router)
 
 from botbook.api.agent_run import router as agent_run_router
 app.include_router(agent_run_router)
