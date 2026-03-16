@@ -3,44 +3,45 @@ import sys
 
 from botbook.agent_scaffold import create_agent
 from botbook.runtime.executor import run as run_agent
+from botbook.runtime.workflow import run_workflow
 from botbook.runtime.memory import history
+from botbook.runtime.project import init_project
+from botbook.runtime.inspect import inspect_run
+from botbook.runtime.logs import show_logs
+from botbook.runtime.deploy import deploy
 
 VERSION="0.1.0"
 
-def banner():
-    print("")
-    print("🚀 BotBook — AI Agent Runtime")
-    print("Version:", VERSION)
-    print("")
-
 def start():
-    banner()
     subprocess.run(
         ["uvicorn","main:app","--host","0.0.0.0","--port","8000"]
     )
 
-def make():
-    if len(sys.argv)<3:
-        print("Usage: botbook make <agent>")
-        return
+def init():
+    init_project()
 
+def make():
     create_agent(sys.argv[2])
 
 def run():
-
-    if len(sys.argv)<4:
-        print("Usage: botbook run <agent> <task>")
-        return
-
     agent=sys.argv[2]
     task=" ".join(sys.argv[3:])
-
     run_agent(agent,task)
 
-def runs():
+def workflow():
+    file=sys.argv[2]
+    task=" ".join(sys.argv[3:])
+    run_workflow(file,task)
 
+def runs():
     for r in history():
         print(r)
+
+def inspect():
+    inspect_run()
+
+def logs():
+    show_logs()
 
 def help():
 
@@ -48,13 +49,24 @@ def help():
 
 BotBook CLI
 
-botbook start
+Lifecycle
 
+botbook init
 botbook make <agent>
-
 botbook run <agent> "<task>"
 
-botbook runs
+Orchestration
+
+botbook workflow <pipeline.yaml> "<task>"
+
+Observability
+
+botbook inspect
+botbook logs
+
+Deployment
+
+botbook deploy
 
 """)
 
@@ -66,8 +78,8 @@ def main():
 
     cmd=sys.argv[1]
 
-    if cmd=="start":
-        start()
+    if cmd=="init":
+        init()
 
     elif cmd=="make":
         make()
@@ -75,8 +87,17 @@ def main():
     elif cmd=="run":
         run()
 
-    elif cmd=="runs":
-        runs()
+    elif cmd=="workflow":
+        workflow()
+
+    elif cmd=="inspect":
+        inspect()
+
+    elif cmd=="logs":
+        logs()
+
+    elif cmd=="deploy":
+        deploy()
 
     else:
         help()

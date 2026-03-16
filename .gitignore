@@ -3,6 +3,21 @@ __pycache__/
 *.pyo
 *.pyd
 .env
-.vscode
-.DS_Store
-audit.log
+dist/
+build/
+*.egg-info
+
+# BotBook runtime
+memory/
+.env
+__pycache__/
+*.pyc
+
+# API keys
+.env
+
+# BotBook runtime data
+memory/
+__pycache__/
+*.pyc
+.env
