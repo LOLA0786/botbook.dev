@@ -8,7 +8,10 @@ def run_workflow(file_path, task):
 
     steps = config.get("steps", [])
 
-    context = task
+    context = {
+        "task": task,
+        "data": {}
+    }
 
     for agent in steps:
 
@@ -18,7 +21,9 @@ def run_workflow(file_path, task):
 
         result = run(agent, context)
 
-        context = result
+        context["data"][agent] = result
+
+        print("Output summary:", str(result)[:200])
 
     print("\nWorkflow complete")
 
